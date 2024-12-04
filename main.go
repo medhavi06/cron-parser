@@ -13,9 +13,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Create parser with default options
-	options := cronparser.DefaultOptions()
-	parser, err := cronparser.NewCronParser(options)
+	parser, err := cronparser.NewCronParser()
 	if err != nil {
 		fmt.Println("Error initializing parser:", err)
 		os.Exit(1)

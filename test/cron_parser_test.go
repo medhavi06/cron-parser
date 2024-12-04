@@ -7,7 +7,7 @@ import (
 )
 
 func TestCronParser(t *testing.T) {
-	parser, err := cronparser.NewCronParser(nil)
+	parser, err := cronparser.NewCronParser()
 	if err != nil {
 		t.Fatalf("Failed to create parser: %v", err)
 	}
@@ -35,6 +35,11 @@ func TestCronParser(t *testing.T) {
 			input:       "* * * *",
 			expectError: true,
 		},
+		{
+			name:        "Incorrect Fields",
+			input:       "1-50 * * 5-1 0 /usr/bin/find",
+			expectError: true,
+		},
 	}
 
 	for _, tc := range testCases {
@@ -54,8 +59,21 @@ func TestCronParser(t *testing.T) {
 			}
 
 			// Detailed comparison
+
 			if len(result.Minutes) != len(tc.expectedResult.Minutes) {
 				t.Errorf("Minutes mismatch. Got %v, want %v", result.Minutes, tc.expectedResult.Minutes)
+			}
+			if len(result.Hours) != len(tc.expectedResult.Hours) {
+				t.Errorf("Hours mismatch. Got %v, want %v", result.Hours, tc.expectedResult.Hours)
+			}
+			if len(result.DaysOfMonth) != len(tc.expectedResult.DaysOfMonth) {
+				t.Errorf("Days of Month mismatch. Got %v, want %v", result.DaysOfMonth, tc.expectedResult.DaysOfMonth)
+			}
+			if len(result.Months) != len(tc.expectedResult.Months) {
+				t.Errorf("Month mismatch. Got %v, want %v", result.Months, tc.expectedResult.Months)
+			}
+			if len(result.DaysOfWeek) != len(tc.expectedResult.DaysOfWeek) {
+				t.Errorf("Days of Week mismatch. Got %v, want %v", result.DaysOfWeek, tc.expectedResult.DaysOfWeek)
 			}
 
 			if result.Command != tc.expectedResult.Command {

@@ -5,13 +5,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/medhavi06/cron-parser/pkg/parser"
+	fieldparser "github.com/medhavi06/cron-parser/pkg/parser"
 )
 
 // CronParser handles parsing of cron expressions
 type CronParser struct {
-	options     *ParserOptions
-	fieldParser FieldParser
+	fieldParser Parser
 }
 
 // CronResult represents the parsed result of a cron expression
@@ -25,14 +24,9 @@ type CronResult struct {
 }
 
 // NewCronParser creates a new CronParser with given options
-func NewCronParser(options *ParserOptions) (*CronParser, error) {
-	if options == nil {
-		options = DefaultOptions()
-	}
-
+func NewCronParser() (*CronParser, error) {
 	parser := &CronParser{
-		options:     options,
-		fieldParser: &parser.StandardFieldParser{},
+		fieldParser: &fieldparser.StandardFieldParser{},
 	}
 
 	return parser, nil
@@ -72,7 +66,8 @@ func (cr *CronResult) Normalize() {
 // Parse processes a full cron expression
 func (cp *CronParser) Parse(expression string) (*CronResult, error) {
 	// Split the expression into parts
-	parts := strings.Fields(expression)
+	parts := strings.Split(expression, " ")
+	// parts := strings.Fields(expression)
 	if len(parts) < 6 {
 		return nil, fmt.Errorf("invalid cron expression: not enough fields")
 	}
